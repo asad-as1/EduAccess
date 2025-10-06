@@ -1,0 +1,427 @@
+/* Main container styles */
+.question-details-container {
+  padding: clamp(1rem, 5vw, 2rem);
+  /* background-color: #f8fafc; */
+  background-color: rgb(15, 23, 42) !important;
+  padding-top: 50px !important;
+  min-height: 100vh;
+}
+
+.question-details {
+  max-width: min(90%, 800px);
+  margin: 0 auto;
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  padding: clamp(1.5rem, 4vw, 2rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  overflow: hidden; /* Prevent overflow of content */
+  word-wrap: break-word; /* Ensure text wraps correctly */
+  overflow-wrap: break-word; /* Ensure long words wrap */
+}
+
+/* Question title and content */
+.question-title {
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  color: #1a2b3c;
+  margin-bottom: 1rem;
+  line-height: 1.3;
+  font-weight: 600;
+  word-wrap: break-word; /* Allow long words to break */
+  overflow-wrap: break-word; /* Prevent long words from overflowing */
+  word-break: break-word; /* Ensure word breaks inside container */
+  max-width: 100%; /* Prevent text from overflowing the card */
+}
+
+/* Question details text */
+.question-details-text {
+  font-size: clamp(2rem, 3vw, 1.125rem);
+  color: #4b5563;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  word-wrap: break-word; /* Ensure text wraps correctly */
+  overflow-wrap: break-word; /* Prevent long words from overflowing */
+  word-break: break-word; /* Break long words */
+  max-width: 100%; /* Prevent text from overflowing */
+}
+
+.user-profile-text {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 1rem;
+}
+
+/* Answers section */
+.answers-section {
+  margin-top: 2.5rem;
+  border-top: 2px solid #e5e7eb;
+  padding-top: 1.5rem;
+}
+
+.answers-section h2 {
+  font-size: clamp(1.25rem, 3vw, 1.5rem);
+  color: #1a2b3c;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+/* Scrollable container for answers */
+.answers-container {
+  max-height: 480px; /* Adjust height as needed */
+  width: 700px;
+  margin-top: 1.5rem;
+  margin-left: auto;
+  margin-right: auto;
+  overflow-y: scroll; /* Allow scroll */
+  border-right: 2px solid rgba(108, 110, 108, 0.87);
+}
+
+/* Hide the scrollbar, but allow scrolling */
+.answers-container::-webkit-scrollbar {
+  width: 0px;  /* Hides the scrollbar */
+  height: 0px;
+}
+
+.answers-container::-webkit-scrollbar-track {
+  background: transparent; /* Optional: make track transparent */
+}
+
+.answers-container::-webkit-scrollbar-thumb {
+  background: transparent; /* Optional: make thumb transparent */
+}
+
+/* Answer cards */
+.answer-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  overflow: hidden; /* Prevent content from overflowing */
+  margin-right: 20px;
+}
+
+.answer-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.answer-card p {
+  color: #4b5563;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  word-wrap: break-word; /* Ensures that long words break into the next line */
+  overflow-wrap: break-word; /* Prevents overflow of long words */
+}
+
+/* Numbering for answers */
+.answer-card p::before {
+  content: counter(answer-number);
+  counter-increment: answer-number;
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+
+/* Ensure the counter starts at 1 for each question */
+.answers-container {
+  counter-reset: answer-number;
+}
+
+/* Forms and inputs */
+.answer-form {
+  margin-top: 2rem;
+  width: 600px;
+}
+
+.answer-input,
+.update-answer-input,
+.update-question-title,
+.update-question-details {
+  width: 100%;
+  padding: 1rem; /* Increased padding */
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  min-height: 120px; /* Increased height for text area */
+  resize: vertical;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background-color: #f9fafb;
+}
+
+.answer-input:focus,
+.update-answer-input:focus,
+.update-question-title:focus,
+.update-question-details:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  background-color: white;
+}
+
+/* Buttons */
+.submit-button,
+.update-button,
+.delete-button,
+.cancel-button {
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.875rem;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.submit-button {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.submit-button:hover {
+  background-color: #2563eb;
+}
+
+.update-button {
+  background-color: #10b981;
+  color: white;
+}
+
+.update-button:hover {
+  background-color: #059669;
+}
+
+.delete-button {
+  background-color: #ef4444;
+  color: white;
+}
+
+.delete-button:hover {
+  background-color: #dc2626;
+}
+
+.cancel-button {
+  background-color: #6b7280;
+  color: white;
+}
+
+.cancel-button:hover {
+  background-color: #4b5563;
+}
+
+/* Action containers */
+.question-actions,
+.answer-actions,
+.update-answer-actions,
+.update-question-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+/* Update cards */
+.update-question-card,
+.update-answer-card {
+  background-color: #f9fafb;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin: 1rem 0;
+}
+
+.no-ans{
+  margin-top: 20px;
+}
+
+
+/* Base container styles */
+.question-details-container {
+  padding: 1rem;
+  background-color: #f8fafc;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.question-details {
+  width: 95%;
+  max-width: 800px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 1.25rem;
+}
+
+/* Question title and content */
+.question-title {
+  font-size: 1.5rem;
+  color: #1a2b3c;
+  margin-bottom: 1rem;
+  line-height: 1.3;
+  word-break: break-word;
+}
+
+.question-details-text {
+  font-size: 1rem;
+  color: #4b5563;
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+  word-break: break-word;
+}
+
+/* Answers section */
+.answers-section {
+  margin-top: 2rem;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1.25rem;
+  width: 100%;
+}
+
+.answers-container {
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+/* Custom scrollbar for better mobile experience */
+.answers-container::-webkit-scrollbar {
+  width: 4px;
+}
+
+.answers-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.answers-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+/* Answer cards */
+.answer-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  width: 100%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Forms and inputs */
+.answer-form {
+  margin-top: 1.5rem;
+  width: 100%;
+}
+
+.answer-input,
+.update-answer-input,
+.update-question-title,
+.update-question-details {
+  width: 100%;
+  padding: 0.875rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  min-height: 100px;
+  background-color: #f9fafb;
+}
+
+/* Buttons */
+.submit-button,
+.update-button,
+.delete-button,
+.cancel-button {
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  width: auto;
+  min-width: 120px;
+  font-size: 0.875rem;
+  margin: 0.25rem;
+}
+
+/* Action containers */
+.question-actions,
+.answer-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+}
+
+/* Mobile-first responsive breakpoints */
+@media (max-width: 640px) {
+  .question-details {
+    width: 100%;
+    padding: 1rem;
+  }
+  
+  .question-title {
+    font-size: 1.25rem;
+  }
+  
+  .answers-container {
+    padding-right: 0;
+  }
+  
+  .question-actions,
+  .answer-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .submit-button,
+  .update-button,
+  .delete-button,
+  .cancel-button {
+    width: 100%;
+    margin: 0.25rem 0;
+  }
+  
+  .answer-card {
+    padding: 0.875rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .question-details-container {
+    padding: 0.5rem;
+  }
+  
+  .answer-input,
+  .update-answer-input {
+    min-height: 80px;
+  }
+  
+  .question-details-text {
+    font-size: 0.875rem;
+  }
+}
+
+/* Tablet breakpoint */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .question-details {
+    width: 90%;
+  }
+  
+  .submit-button,
+  .update-button,
+  .delete-button,
+  .cancel-button {
+    min-width: 100px;
+  }
+}

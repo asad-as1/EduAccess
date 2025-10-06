@@ -8,7 +8,7 @@ pnpm-debug.log*
 lerna-debug.log*
 
 **/.env
-/frontend/
+# /frontend/
 
 # Ignore node_modules in all subfolders
 **/node_modules/

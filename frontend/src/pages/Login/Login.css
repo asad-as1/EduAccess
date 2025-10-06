@@ -1,0 +1,149 @@
+.login-container {
+    display: flex;
+    min-height: 100vh;
+    position: relative;
+  }
+  
+  .form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
+    margin-top: -240px;
+  }
+  
+  .form-box {
+    background-color: #fff;
+    max-width: 400px;
+    width: 100%;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+  }
+  
+  .form-header h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  
+  .form-header p {
+    text-align: center;
+  }
+  
+  .link {
+    color: blue;
+    text-decoration: none;
+  }
+  
+  .link:hover {
+    text-decoration: underline;
+  }
+  
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-group label {
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+  
+  .form-group input {
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .error {
+    color: red;
+    font-size: 12px;
+  }
+  
+  .password-container {
+    position: relative;
+  }
+  
+  .password-container .toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+  }
+  
+  .submit-button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .submit-button:hover {
+    background-color: #0056b3;
+  }
+
+  @media (max-width: 768px) {
+    .login-container {
+      position: relative;
+      top: 50px;
+      flex-direction: column;
+      margin-bottom: 50px;
+    }
+  
+    .form-box {
+      max-width: 90%;
+      padding: 15px;
+    }
+  
+    .form-header h2 {
+      font-size: 20px;
+    }
+  
+    .form-header p {
+      font-size: 14px;
+    }
+  
+    .form-group label {
+      font-size: 12px;
+    }
+  
+    .form-group input {
+      font-size: 12px;
+      padding: 8px;
+      width: 100%;
+    }
+
+    .form-container {
+        margin-top: 40px;
+      }
+  
+    .password-container {
+      position: relative;
+    }
+  
+    .toggle-password {
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+    }
+  
+    .submit-button {
+      font-size: 14px;
+      padding: 10px;
+    }
+  }

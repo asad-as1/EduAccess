@@ -1,0 +1,155 @@
+.note-card-container {
+  background-color: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  width: 100%; /* Added for responsiveness */
+  max-width: 400px; /* Added max-width */
+  margin: 0 auto; /* Center the card */
+}
+
+.note-card-container:hover {
+  transform: translateY(-0.5rem);
+}
+
+.note-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.note-card-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #3b82f6; /* Blue color */
+}
+
+.note-card-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937; /* Dark gray */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Truncate after 2 lines */
+  -webkit-box-orient: vertical;
+}
+
+.note-card-short-note {
+  color: #4b5563; /* Medium gray */
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Truncate after 2 lines */
+  -webkit-box-orient: vertical;
+}
+
+.note-card-author-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  color: #6b7280; /* Light gray */
+}
+
+.note-card-author-detail {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.note-card-icon-small {
+  width: 1rem;
+  height: 1rem;
+}
+
+.note-card-view-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #3b82f6; /* Blue color */
+  color: white;
+  border-radius: 0.75rem;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+.lr {
+  width: 100%;
+  display: flex;
+  justify-content: end;
+  align-items: end;
+  margin-top: auto !important;
+}
+
+.note-card-view-button:hover {
+  background-color: #2563eb; /* Darker blue */
+}
+
+.note-card-view-button .note-card-icon-small {
+  width: 1rem;
+  height: 1rem;
+}
+
+@media (max-width: 768px) {
+  .note-card-container {
+    padding: 1rem;
+    width: 80% !important;
+  }
+
+  .note-card-title {
+    font-size: 1rem;
+    /* overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Truncate after 2 lines */
+    /* -webkit-box-orient: vertical;  */
+  }
+
+  .note-card-short-note {
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+  }
+
+  .note-card-author-info {
+    font-size: 0.75rem;
+  }
+
+  .note-card-view-button {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .note-card-container {
+    padding: 0.75rem;
+  }
+  .note-card-title {
+    padding: 0.45rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Truncate after 2 lines */
+    -webkit-box-orient: vertical;
+  }
+
+  .note-card-header {
+    margin-bottom: 0.75rem;
+  }
+
+  .note-card-icon {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .note-card-author-info {
+    gap: 0.125rem;
+  }
+}
