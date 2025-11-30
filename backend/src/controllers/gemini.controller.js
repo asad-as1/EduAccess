@@ -9,7 +9,8 @@ exports.summarizeText = async (req, res) => {
 
     if (!text || !prompt) {
       return res.status(400).json({
-        error: "Missing required fields. Please provide both text and prompt.",
+        error:
+          "Missing required fields. Please provide both text and prompt.",
       });
     }
 
@@ -17,10 +18,12 @@ exports.summarizeText = async (req, res) => {
 
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
-      contents: fullPrompt,
+      contents: [{ role: "user", parts: [{ text: fullPrompt }] }],
     });
 
-    const summary = response.text() || "Summary not available.";
+    const summary =
+      response?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      "Summary not available.";
 
     return res.json({
       summary,
@@ -65,10 +68,12 @@ Reasons: [bullet points of specific reasons]
 
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
-      contents: comparisonPrompt,
+      contents: [{ role: "user", parts: [{ text: comparisonPrompt }] }],
     });
 
-    const comparisonResult = response.text() || "Summary not available.";
+    const comparisonResult =
+      response?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      "Summary not available.";
 
     let score = null;
     let analysis = "";
