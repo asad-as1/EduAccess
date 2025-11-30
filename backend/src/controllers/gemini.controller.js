@@ -1,38 +1,26 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const { GoogleGenAI } = require("@google/genai");
 require("dotenv").config();
 
-const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
-const genAI = new GoogleGenerativeAI(GOOGLE_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY });
 
-// Summarization Controller
-// Summarization Controller
 exports.summarizeText = async (req, res) => {
   try {
     const { text, prompt } = req.body;
 
     if (!text || !prompt) {
-      return res
-        .status(400)
-        .json({
-          error:
-            "Missing required fields. Please provide both text and prompt.",
-        });
+      return res.status(400).json({
+        error: "Missing required fields. Please provide both text and prompt.",
+      });
     }
 
-    const fullPrompt = `
-      ${prompt}
-      
-      Text to summarize:
-      ${text}
-    `;
+    const fullPrompt = `${prompt}\n\nText to summarize:\n${text}`;
 
-    const response = await model.generateContent(fullPrompt);
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: fullPrompt,
+    });
 
-    // Extract summary text correctly
-    const summary =
-      response.response?.candidates?.[0]?.content?.parts?.[0]?.text ||
-      "Summary not available.";
+    const summary = response.text() || "Summary not available.";
 
     return res.json({
       summary,
@@ -46,45 +34,41 @@ exports.summarizeText = async (req, res) => {
   }
 };
 
-// Text Comparison Controller
 exports.compareTexts = async (req, res) => {
   try {
-    // console.log(req.body)
     const { reference_text, comparison_text } = req.body;
 
     if (!reference_text || !comparison_text) {
-      return res
-        .status(400)
-        .json({
-          error:
-            "Missing required fields. Please provide both reference_text and comparison_text.",
-        });
+      return res.status(400).json({
+        error:
+          "Missing required fields. Please provide both reference_text and comparison_text.",
+      });
     }
 
     const comparisonPrompt = `
-  Task: Compare the following two texts and provide:
-  1. A similarity score between 0 and 100
-  2. A detailed analysis of the comparison
-  3. Specific reasons for the score
+Task: Compare the following two texts and provide:
+1. A similarity score between 0 and 100
+2. A detailed analysis of the comparison
+3. Specific reasons for the score
 
-  Reference Text:
-  ${reference_text}
+Reference Text:
+${reference_text}
 
-  Text to Compare:
-  ${comparison_text}
+Text to Compare:
+${comparison_text}
 
-  Please format your response as follows:
-  Score: [number]
-  Analysis: [detailed paragraph-style analysis]
-  Reasons: [bullet points of specific reasons]
+Please format your response as follows:
+Score: [number]
+Analysis: [detailed paragraph-style analysis]
+Reasons: [bullet points of specific reasons]
 `;
 
-    const response = await model.generateContent(comparisonPrompt);
-    const summary =
-      response.response?.candidates?.[0]?.content?.parts?.[0]?.text ||
-      "Summary not available.";
-    // console.log(summary)
-    const comparisonResult = summary;
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: comparisonPrompt,
+    });
+
+    const comparisonResult = response.text() || "Summary not available.";
 
     let score = null;
     let analysis = "";
