@@ -10,6 +10,11 @@ const NoteSchema = new mongoose.Schema({
       type: String,
       required: true,
     },
+    publicId: {
+      type: String,
+      required: false,
+    },
+
     description: {
       type: String,
       required: true,

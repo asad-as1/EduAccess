@@ -3,10 +3,11 @@ const Note = require("../models/Note");
 // Create a new note
 exports.createNote = async (req, res) => {
   try {
-    const { title, description, file } = req.body.newNote;
+    const { title, description, file, publicId } = req.body.newNote;
     // console.log(title, description, file)
 
     if (!title || !description || !file) {
+
       return res.status(400).json({ message: "All fields are required." });
     }
 
@@ -14,8 +15,10 @@ exports.createNote = async (req, res) => {
       title,
       description,
       file,
-      author: req?.user?.id, 
+      publicId: publicId || null,
+      author: req?.user?.id,
     });
+
 
     await newNote.save();
     res.status(201).json(newNote);

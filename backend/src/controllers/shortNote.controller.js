@@ -4,7 +4,7 @@ const User = require('../models/User');
 // Create a new short note
 exports.createShortNote = async (req, res) => {
     try {
-        const { title, shortNote, fileUrl } = req.body.noteData;
+        const { title, shortNote, fileUrl, publicId } = req.body.noteData;
         // console.log(req.body)
         const author = req.user.id; 
 
@@ -16,6 +16,7 @@ exports.createShortNote = async (req, res) => {
             title,
             shortNote,
             fileUrl,
+            publicId: publicId || null,
             author
         });
 
@@ -56,7 +57,7 @@ exports.getShortNoteById = async (req, res) => {
 // Update a short note
 exports.updateShortNote = async (req, res) => {
     try {
-        const { title, shortNote, fileUrl } = req.body.updatedNoteData;
+        const { title, shortNote, fileUrl, publicId } = req.body.updatedNoteData;
         // console.log(title, shortNote, fileUrl)
 
         if (!shortNote && !fileUrl) {
@@ -64,7 +65,7 @@ exports.updateShortNote = async (req, res) => {
         }
         const updatedShortNote = await ShortNote.findByIdAndUpdate(
             req.params.id,
-            { title, shortNote, fileUrl },
+            { title, shortNote, fileUrl, publicId },
             { new: true, runValidators: true }
         );
         if (!updatedShortNote) return res.status(404).json({ message: 'Short note not found' });

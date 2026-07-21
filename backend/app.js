@@ -58,6 +58,7 @@ const shortNoteRouter = require('./src/routes/shortNotes');
 const eventRouter = require('./src/routes/event');
 const activityRouter = require('./src/routes/activity');
 const geminiRouter = require('./src/routes/gemini');
+const cloudinaryRouter = require('./src/routes/cloudinary');
 
 app.use("/user", userRouter);
 app.use('/qna', qaRoutes);
@@ -66,6 +67,8 @@ app.use("/mynotes", shortNoteRouter);
 app.use("/events", eventRouter);
 app.use("/activity", activityRouter);
 app.use("/api", geminiRouter);
+app.use('/cloudinary', cloudinaryRouter);
+
 
 
 
