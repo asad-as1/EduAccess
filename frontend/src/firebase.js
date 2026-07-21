@@ -1,48 +1,75 @@
-import { initializeApp } from "firebase/app";
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { v4 as uuidv4 } from "uuid";
+import axios from "axios";
+import Cookies from "cookies-js";
 
-const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_API_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
+const getToken = () => Cookies.get("user");
+
+const getCloudinaryBaseUrl = () => {
+  const baseUrl = import.meta.env.VITE_URL || "";
+  return `${baseUrl.replace(/\/$/, "")}/cloudinary`;
 };
 
-const app = initializeApp(firebaseConfig);
-const storage = getStorage(app);
+const extractPublicId = (value) => {
+  if (!value) return null;
 
-export const upload = async (media, onProgress) => {
   try {
-    const imgRef = ref(storage, `files/${uuidv4()}`);
-    const uploadTask = uploadBytesResumable(imgRef, media);
+    const url = new URL(value);
+    const parts = url.pathname.split("/").filter(Boolean);
+    const uploadIndex = parts.findIndex((part) => part === "upload");
 
-    return new Promise((resolve, reject) => {
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          // Calculate the progress percentage
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          if (onProgress) {
-            onProgress(progress.toFixed(2)); // Pass the progress to the callback
-          }
-        },
-        (error) => reject(error),
-        async () => {
-          try {
-            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-            resolve(downloadURL);
-          } catch (error) {
-            reject(error);
-          }
-        }
-      );
-    });
+    if (uploadIndex === -1) {
+      return value;
+    }
+
+    const tail = parts.slice(uploadIndex + 1);
+    const withoutVersion = tail[0]?.startsWith("v") ? tail.slice(1) : tail;
+    return withoutVersion.join("/");
   } catch (error) {
-    console.error(error);
-    throw error;
+    return value;
   }
 };
+
+export const upload = async (media, onProgress) => {
+  if (!media) throw new Error("No file selected");
+
+  const token = getToken();
+  const formData = new FormData();
+  formData.append("file", media);
+
+  if (token) {
+    formData.append("token", token);
+  }
+
+  const onUploadProgress = (progressEvent) => {
+    if (!onProgress) return;
+    if (!progressEvent.total) return;
+
+    const percent = (progressEvent.loaded / progressEvent.total) * 100;
+    onProgress(percent.toFixed(2));
+  };
+
+  const res = await axios.post(`${getCloudinaryBaseUrl()}/upload`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+    onUploadProgress,
+  });
+
+  return res.data;
+};
+
+export const deleteFile = async (publicIdOrUrl) => {
+  if (!publicIdOrUrl) return null;
+
+  const token = getToken();
+  const publicId = extractPublicId(publicIdOrUrl) || publicIdOrUrl;
+
+  if (!publicId) return null;
+
+  const res = await axios.post(`${getCloudinaryBaseUrl()}/delete`, {
+    publicId,
+    token,
+  });
+
+  return res.data;
+};
+

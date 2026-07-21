@@ -52,8 +52,8 @@ function Signup({ user }) {
     try {
       if (data.profilePicture && data.profilePicture.length > 0) {
         const file = data.profilePicture[0];
-        const url = await upload(file);
-        data.profilePicture = url;
+        const uploadResult = await upload(file);
+        data.profilePicture = uploadResult?.url || "";
       } else {
         data.profilePicture = user?.profilePicture || "";
       }

@@ -174,11 +174,16 @@
   margin-bottom: 1.5rem;
 }
 
+.progress-container {
+  margin-bottom: 1rem;
+}
+
 .progress-bar {
   height: 10px;
   background-color: #e3f2fd;
   border-radius: 6px;
   overflow: hidden;
+  margin-bottom: 0.5rem;
 }
 
 .progress {
@@ -190,9 +195,9 @@
 .progress-text {
   display: block;
   text-align: center;
-  margin-top: 0.75rem;
   color: #1976d2;
   font-weight: 600;
+  font-size: 0.95rem;
 }
 
 .file-label {

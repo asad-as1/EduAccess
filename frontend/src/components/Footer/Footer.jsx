@@ -41,14 +41,14 @@ const Footer = () => {
             <Link to='/' className="social-link">LinkedIn</Link>
             <Link to='/' className="social-link">Instagram</Link>
           </div>
-        </div>
       </div>
 
       <div className="footer-bottom">
-        <p> 
+        <p>
           <b>Made by: Mohd Asad Ansari</b>
-          <div>&copy; {currentYear} EduAccess. All rights reserved.</div>
+          <span>&copy; {currentYear} EduAccess. All rights reserved.</span>
         </p>
+      </div>
       </div>
     </footer>
   );

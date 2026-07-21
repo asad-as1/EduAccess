@@ -10,14 +10,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "cookies-js";
 import Swal from "sweetalert2";
-import {
-  getStorage,
-  ref,
-  deleteObject,
-  uploadBytesResumable,
-  getDownloadURL,
-} from "firebase/storage";
-import { upload } from "../../firebase.js";
+import { upload, deleteFile } from "../../firebase.js";
 import "./SingleNote.css";
 import NotFound from "../Not Found/NotFound.jsx";
 
@@ -28,8 +21,7 @@ const SingleNote = () => {
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const navigate = useNavigate();
   const token = Cookies.get("user");
-  const storage = getStorage();
-  const [errorMessage, setErrorMessage] = useState(""); // New error message state
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const fetchNote = async () => {
@@ -39,22 +31,19 @@ const SingleNote = () => {
           { token }
         );
         setNote(response.data);
+        setErrorMessage("");
       } catch (error) {
-        // console.error("Error fetching the note:", error);
-        // Swal.fire("Error", "Failed to load the note.", "error");
-        setErrorMessage(error); 
-
+        setErrorMessage(error?.response?.data?.message || "Failed to load the note.");
       }
     };
     fetchNote();
-  }, [id, token, errorMessage]);
+  }, [id, token]);
 
-  const deleteFileFromFirebase = async (fileUrl) => {
-    if (!fileUrl) return;
-    const filePath = decodeURIComponent(fileUrl.split("/").pop().split("?")[0]);
-    const storageRef = ref(storage, filePath);
+  const deleteFileFromCloudinary = async (fileUrl, publicId) => {
+    if (!fileUrl && !publicId) return;
+
     try {
-      await deleteObject(storageRef);
+      await deleteFile(publicId || fileUrl);
       console.log("File deleted successfully");
     } catch (error) {
       console.error("Error deleting file:", error);
@@ -73,8 +62,8 @@ const SingleNote = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          if (note.fileUrl) {
-            await deleteFileFromFirebase(note.fileUrl);
+          if (note.fileUrl || note.publicId) {
+            await deleteFileFromCloudinary(note.fileUrl, note.publicId);
           }
           await axios.post(
             `${import.meta.env.VITE_URL}/mynotes/deleteNote/${id}`,
@@ -92,18 +81,23 @@ const SingleNote = () => {
 
   const handleUpdate = async () => {
     let fileUrl = note.fileUrl;
+    let publicId = note.publicId;
 
     if (newFile) {
-      if (note.fileUrl) {
-        await deleteFileFromFirebase(note.fileUrl);
+      if (note.fileUrl || note.publicId) {
+        await deleteFileFromCloudinary(note.fileUrl, note.publicId);
       }
-      fileUrl = await upload(newFile);
+
+      const uploadResult = await upload(newFile);
+      fileUrl = uploadResult?.url || fileUrl;
+      publicId = uploadResult?.publicId || publicId;
     }
 
     const updatedNoteData = {
       title: note.title,
       shortNote: note.shortNote,
       fileUrl,
+      publicId,
     };
 
     try {

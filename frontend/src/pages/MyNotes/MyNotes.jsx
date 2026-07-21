@@ -5,7 +5,7 @@ import axios from 'axios';
 import { upload } from '../../firebase.js';
 import Cookies from 'cookies-js';
 import NoteCard from '../../components/NoteCard/NoteCard.jsx';
-import Swal from 'sweetalert2';  // Import SweetAlert2
+import Swal from 'sweetalert2';
 import './MyNotes.css';
 
 const NotesPage = () => {
@@ -18,7 +18,6 @@ const NotesPage = () => {
 
   const token = Cookies.get('user');
   const BACKEND_URL = import.meta.env.VITE_URL;
-  // console.log(token)
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -26,7 +25,6 @@ const NotesPage = () => {
         const response = await axios.post(`${BACKEND_URL}/user/profile`, {
           token,
         });
-        // console.log(response.data.user)
         setUser(response.data.user);
       } catch (error) {
         setUser(null);
@@ -41,20 +39,17 @@ const NotesPage = () => {
   }, [token]);
 
   const fetchNotes = async () => {
-    // console.log(user?.role)
-    if(user?.role !== 'admin') {
+    if (user?.role !== 'admin') {
       try {
         const response = await axios.post(`${import.meta.env.VITE_URL}/mynotes/getAllNotes`, { token });
         setNotes(response.data);
       } catch (error) {
         console.error('Error fetching notes:', error);
       }
-    }
-    else {
+    } else {
       try {
         const response = await axios.post(`${import.meta.env.VITE_URL}/mynotes/getAllUsersNotes`, { token });
         setNotes(response.data);
-        // console.log(notes)
       } catch (error) {
         console.error('Error fetching notes:', error);
       }
@@ -62,7 +57,7 @@ const NotesPage = () => {
   };
 
   useEffect(() => {
-    if(user) {
+    if (user) {
       fetchNotes();
     }
   }, [user]);
@@ -102,13 +97,19 @@ const NotesPage = () => {
     }
 
     let fileUrl;
+    let publicId = null;
 
-    if(file) fileUrl = await upload(file);
+    if (file) {
+      const result = await upload(file);
+      fileUrl = result.url;
+      publicId = result.publicId;
+    }
 
     const noteData = {
       title,
       shortNote: textContent,
-      fileUrl
+      fileUrl,
+      publicId
     };
 
     try {
@@ -136,60 +137,58 @@ const NotesPage = () => {
   return (
     <div className='div-top'>
       <div className="notes-page-container">
-      <div className="add-note-button-container">
-        <Button variant="contained" onClick={() => setShowForm(true)} startIcon={<AiOutlinePlus />}>
-          Add Note
-        </Button>
-      </div>
-
-      {showForm && (
-        <div className="note-form-container">
-          <form onSubmit={handleSubmit} className="note-form">
-            <TextField
-              label="Title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              fullWidth
-              margin="normal"
-              required
-            />
-            <TextField
-              label="Enter your text (optional)"
-              value={textContent}
-              onChange={(e) => setTextContent(e.target.value)}
-              multiline
-              rows={6}
-              fullWidth
-              margin="normal"
-            />
-            <TextField
-              type="file"
-              inputProps={{ accept: '.pdf,.txt,.docx' }}
-              onChange={handleFileChange}
-              fullWidth
-              margin="normal"
-            />
-            <div className="note-form-actions">
-              <Button variant="outlined" onClick={() => setShowForm(false)}>
-                Cancel
-              </Button>
-              <Button variant="contained" type="submit">
-                Save Note
-              </Button>
-            </div>
-          </form>
+        <div className="add-note-button-container">
+          <Button variant="contained" onClick={() => setShowForm(true)} startIcon={<AiOutlinePlus />}>
+            Add Note
+          </Button>
         </div>
-      )}
 
-      <div className="notes-list-container">
-        {notes.map((note, index) => (
-          <NoteCard key={index} title={note.title} id={note._id} shortNote={note.shortNote} author={note?.author} role={user?.role} />
-        ))}
-      </div>
+        {showForm && (
+          <div className="note-form-container">
+            <form onSubmit={handleSubmit} className="note-form">
+              <TextField
+                label="Title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                fullWidth
+                margin="normal"
+                required
+              />
+              <TextField
+                label="Enter your text (optional)"
+                value={textContent}
+                onChange={(e) => setTextContent(e.target.value)}
+                multiline
+                rows={6}
+                fullWidth
+                margin="normal"
+              />
+              <TextField
+                type="file"
+                inputProps={{ accept: '.pdf,.txt,.docx' }}
+                onChange={handleFileChange}
+                fullWidth
+                margin="normal"
+              />
+              <div className="note-form-actions">
+                <Button variant="outlined" onClick={() => setShowForm(false)}>
+                  Cancel
+                </Button>
+                <Button variant="contained" type="submit">
+                  Save Note
+                </Button>
+              </div>
+            </form>
+          </div>
+        )}
+
+        <div className="notes-list-container">
+          {notes.map((note, index) => (
+            <NoteCard key={index} title={note.title} id={note._id} shortNote={note.shortNote} author={note?.author} role={user?.role} />
+          ))}
+        </div>
     </div>
-    </div>
-    
+</div>
   );
 };
-
 export default NotesPage;

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { upload } from "../../firebase.js";
-import { getStorage, ref, deleteObject } from "firebase/storage";
+import { upload, deleteFile } from "../../firebase.js";
 import Cookie from "cookies-js";
 import { Link } from "react-router-dom";
 import {
@@ -80,7 +79,13 @@ const StudyNotes = () => {
         setUploadProgress(progress)
       );
 
-      const newNote = { title, description, file: fileUrl };
+      const fileObj = fileUrl;
+      const newNote = {
+        title,
+        description,
+        file: fileObj.url,
+        publicId: fileObj.publicId,
+      };
       await axios.post(`${import.meta.env.VITE_URL}/notes/studynotes`, {
         newNote,
         token,
@@ -99,7 +104,7 @@ const StudyNotes = () => {
     }
   };
 
-  const handleDeleteNote = async (noteId, fileUrl) => {
+  const handleDeleteNote = async (noteId, publicId, fileUrl) => {
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -111,19 +116,22 @@ const StudyNotes = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
+          if (publicId || fileUrl) {
+            try {
+              await deleteFile(publicId || fileUrl);
+            } catch (cloudErr) {
+              console.warn("Cloudinary delete failed, continuing:", cloudErr);
+            }
+          }
+
           await axios.post(`${import.meta.env.VITE_URL}/notes/deleteNote`, {
             noteId,
             token,
           });
 
-          const storage = getStorage();
-          const filePath = decodeURIComponent(
-            fileUrl.split("/").pop().split("?")[0]
+          setNotes((prevNotes) =>
+            prevNotes.filter((note) => note._id !== noteId)
           );
-          const storageRef = ref(storage, filePath);
-          await deleteObject(storageRef);
-
-          setNotes(notes.filter((note) => note._id !== noteId));
           Swal.fire(
             "Deleted!",
             "Your note and file have been deleted.",
@@ -194,7 +202,10 @@ const StudyNotes = () => {
                 <Share2 size={24} />
                 <h2>Share Your Note</h2>
               </div>
-              <button className="close-btn" onClick={() => setShowModal(false)}>
+              <button
+                className="close-btn"
+                onClick={() => setShowModal(false)}
+              >
                 <X size={24} />
               </button>
             </div>
@@ -207,8 +218,7 @@ const StudyNotes = () => {
                 className="input-field"
               />
               <textarea
-                placeholder="Description *
-Description should be of 20 words."
+                placeholder="Description *\nDescription should be of 20 words."
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 className="textarea-field"
@@ -220,7 +230,7 @@ Description should be of 20 words."
                     onChange={handleFileChange}
                     id="file-input"
                     className="file-input"
-                    style={{ display: "none" }} // Hide the default input
+                    style={{ display: "none" }}
                   />
                   <Upload size={20} />
                   {file ? file.name : "Choose File"}
@@ -233,9 +243,9 @@ Description should be of 20 words."
                     <div
                       className="progress"
                       style={{ width: `${uploadProgress}%` }}
-                    ></div>
+                    />
+                    <span className="progress-text">{uploadProgress}%</span>
                   </div>
-                  <span className="progress-text">{uploadProgress}%</span>
                 </div>
               )}
 
@@ -253,10 +263,10 @@ Description should be of 20 words."
           <div key={note._id} className="note-card">
             <div className="note-content">
               <div className="sameme">
-                <div className="">
-              <FileText className="note-card-icon" />
-              </div>
-              <h3 className="note-title">{note.title}</h3>
+                <div>
+                  <FileText className="note-card-icon" />
+                </div>
+                <h3 className="note-title">{note.title}</h3>
               </div>
               <p className="note-description">{note.description}</p>
               <p className="note-author">
@@ -279,7 +289,7 @@ Description should be of 20 words."
               {(note.author?._id === userProfile?._id ||
                 userProfile?.role === "admin") && (
                 <button
-                  onClick={() => handleDeleteNote(note._id, note.file)}
+                  onClick={() => handleDeleteNote(note._id, note.publicId, note.file)}
                   className="delete-btn"
                 >
                   <Trash2 size={18} />
